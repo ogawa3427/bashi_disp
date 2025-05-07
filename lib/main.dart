@@ -4,6 +4,7 @@ import 'dart:js' as js;
 import 'dart:html' as html;
 import 'dart:ui' as ui;
 import 'package:marquee/marquee.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 // 1920x540
 
@@ -21,6 +22,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
+      supportedLocales: const [Locale('ja', 'JP')],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate
+      ],
       home: const ResolutionDisplayPage(),
     );
   }
