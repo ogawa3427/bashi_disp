@@ -38,6 +38,7 @@ class _ResolutionDisplayPageState extends State<ResolutionDisplayPage> {
   bool _buttonVisible = true; // ボタンの表示状態を管理
   // 横分割の比率を設定するリスト
   final List<int> _columnRatios = [5, 3, 9, 16]; // 時刻、路線番号、行先、経由の比率
+  int _textIndex = 0; // テキスト切り替え用インデックス
 
   // セルテキスト用の共通スタイルを定義
   final TextStyle cellTextStyle = const TextStyle(
@@ -60,6 +61,22 @@ class _ResolutionDisplayPageState extends State<ResolutionDisplayPage> {
         setState(() {
           _isFullScreen = isCurrentlyFullScreen;
         });
+      }
+    });
+    
+    // テキスト切り替えタイマーを設定
+    Future.delayed(Duration.zero, () {
+      _startTextSwitchTimer();
+    });
+  }
+  
+  void _startTextSwitchTimer() {
+    Future.delayed(const Duration(seconds: 5), () {
+      if (mounted) {
+        setState(() {
+          _textIndex = (_textIndex + 1) % 2;
+        });
+        _startTextSwitchTimer();
       }
     });
   }
@@ -276,12 +293,33 @@ class _ResolutionDisplayPageState extends State<ResolutionDisplayPage> {
                               alignment: Alignment.centerLeft,
                               child: Padding(
                                 padding: EdgeInsets.only(left: 10),
-                                child: Text(
-                                  '旭町経由',
-                                  style: cellTextStyle.copyWith(
-                                    color: Colors.lightBlueAccent,
-                                  ),
-                                  textAlign: TextAlign.left,
+                                child: AnimatedSwitcher(
+                                  duration: const Duration(milliseconds: 0),
+                                  child: _textIndex == 0 
+                                    ? Text(
+                                        '旭町経由',
+                                        key: const ValueKey('text1'),
+                                        style: cellTextStyle.copyWith(
+                                          color: Colors.lightBlueAccent,
+                                        ),
+                                        textAlign: TextAlign.left,
+                                      )
+                                    : Marquee(
+                                        key: const ValueKey('scrolling_text'),
+                                        text: '旭町で金沢駅方面のりつぎ',
+                                        style: cellTextStyle.copyWith(
+                                          color: Colors.white,
+                                        ),
+                                        scrollAxis: Axis.horizontal,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        blankSpace: 50.0,
+                                        velocity: 200.0,
+                                        pauseAfterRound: Duration.zero,
+                                        showFadingOnlyWhenScrolling: true,
+                                        fadingEdgeStartFraction: 0.1,
+                                        fadingEdgeEndFraction: 0.1,
+                                        startPadding: 10.0,
+                                      ),
                                 ),
                               ),
                             ),
