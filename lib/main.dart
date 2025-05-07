@@ -209,10 +209,22 @@ class _ResolutionDisplayPageState extends State<ResolutionDisplayPage> {
                           child: Container(
                             // color: Colors.yellow.shade700,
                             child: Center(
-                              child: Text(
-                                "若松からの停車停留所:若松西 若松橋 旭町 旭町口 田井町 桜町から 兼六園下 香林坊 武蔵ヶ辻 経由 金沢駅東口まで",
+                              child: Marquee(
+                                text: "若松からの停車停留所:若松西 若松橋 旭町 旭町口 田井町 桜町から 兼六園下 香林坊 武蔵ヶ辻 経由 金沢駅東口まで                                                ",
                                 style: cellTextStyle,
-                                textAlign: TextAlign.center,
+                                scrollAxis: Axis.horizontal,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                blankSpace: 50.0,
+                                velocity: 200.0,
+                                pauseAfterRound: Duration.zero,
+                                showFadingOnlyWhenScrolling: true,
+                                fadingEdgeStartFraction: 0.1,
+                                fadingEdgeEndFraction: 0.1,
+                                startPadding: 10.0,
+                                accelerationDuration: Duration(seconds: 1),
+                                accelerationCurve: Curves.linear,
+                                decelerationDuration: Duration(milliseconds: 500),
+                                decelerationCurve: Curves.easeOut,
                               ),
                             ),
                           ),
