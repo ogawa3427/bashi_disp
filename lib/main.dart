@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'dart:io' show Platform;
+import 'dart:js' as js;
+import 'dart:html' as html;
+import 'dart:ui' as ui;
 
 void main() {
   runApp(const MyApp());
@@ -31,26 +33,42 @@ class ResolutionDisplayPage extends StatefulWidget {
 class _ResolutionDisplayPageState extends State<ResolutionDisplayPage> {
   bool _isFullScreen = false;
 
-  void _toggleFullScreen() {
-    setState(() {
-      _isFullScreen = !_isFullScreen;
-      if (_isFullScreen) {
-        if (Platform.isAndroid) {
-          SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-        } else if (Platform.isIOS) {
-          SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
-        }
-      } else {
-        SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  @override
+  void initState() {
+    super.initState();
+    // フルスクリーン状態の変化を検知するリスナーを追加
+    html.document.onFullscreenChange.listen((_) {
+      final isCurrentlyFullScreen = html.document.fullscreenElement != null;
+      if (_isFullScreen != isCurrentlyFullScreen) {
+        setState(() {
+          _isFullScreen = isCurrentlyFullScreen;
+        });
       }
     });
   }
 
-  @override
-  void dispose() {
-    // アプリ終了時に元の状態に戻す
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-    super.dispose();
+  void _toggleFullScreen() {
+    if (!_isFullScreen) {
+      _requestFullscreen();
+    } else {
+      _exitFullscreen();
+    }
+  }
+  
+  void _requestFullscreen() {
+    final element = html.document.documentElement;
+    if (element != null) {
+      // 各ブラウザに対応したFullscreen API呼び出し
+      if (element.requestFullscreen != null) {
+        element.requestFullscreen();
+      }
+    }
+  }
+  
+  void _exitFullscreen() {
+    if (html.document.exitFullscreen != null) {
+      html.document.exitFullscreen();
+    }
   }
 
   @override
