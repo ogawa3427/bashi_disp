@@ -87,10 +87,6 @@ class _ResolutionDisplayPageState extends State<ResolutionDisplayPage> {
     } else {
       _exitFullscreen();
     }
-    // ボタンを押したら非表示にする
-    setState(() {
-      _buttonVisible = false;
-    });
   }
 
   void _requestFullscreen() {
@@ -107,6 +103,13 @@ class _ResolutionDisplayPageState extends State<ResolutionDisplayPage> {
     if (html.document.exitFullscreen != null) {
       html.document.exitFullscreen();
     }
+  }
+
+  // ボタンを非表示にするメソッドを追加
+  void _hideButtons() {
+    setState(() {
+      _buttonVisible = false;
+    });
   }
 
   @override
@@ -428,16 +431,32 @@ class _ResolutionDisplayPageState extends State<ResolutionDisplayPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   if (_buttonVisible)
-                    ElevatedButton.icon(
-                      onPressed: _toggleFullScreen,
-                      icon: const Icon(Icons.fullscreen),
-                      label: const Text('全画面表示'),
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 12,
+                    Column(
+                      children: [
+                        ElevatedButton.icon(
+                          onPressed: _toggleFullScreen,
+                          icon: const Icon(Icons.fullscreen),
+                          label: const Text('全画面表示'),
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 12,
+                            ),
+                          ),
                         ),
-                      ),
+                        const SizedBox(height: 10),
+                        ElevatedButton.icon(
+                          onPressed: _hideButtons,
+                          icon: const Icon(Icons.visibility_off),
+                          label: const Text('ボタン非表示'),
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 12,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                 ],
               ),
